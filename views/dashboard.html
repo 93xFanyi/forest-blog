@@ -20,6 +20,9 @@
         <div class="action">
             <a href="{{ .Config.DashboardEntrance }}?action=updateArticle">更新文章</a>
         </div>
+        <div class="action">
+            <a href="{{ .Config.DashboardEntrance }}?action=reloadTemplate">重载HTML模板</a>
+        </div>
     </div>
     {{ if .Data.msg }}
         <div id="action-msg" class="action-msg">

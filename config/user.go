@@ -3,9 +3,11 @@ package config
 type userConfig struct {
 	SiteName string `json:"siteName"`
 
-	Author string `json:"author"`
+	FootNote string `json:"footnote"`
 
-	Icp string `json:"icp"`
+	// Author string `json:"author"`
+
+	// Icp string `json:"icp"`
 
 	TimeLayout string `json:"timeLayout"`
 

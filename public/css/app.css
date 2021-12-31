@@ -137,7 +137,7 @@ blockquote::before{
 }
 
 .markdow img{
-    width: 100%;
+    /* width: 100%; */
     border-radius: 4px;
 }
 
@@ -247,7 +247,7 @@ hr:after{
     color: #bfbfbf;
     padding-bottom: 6px;
 }
-.pagination li a:hover,.pagination .active a{
+.pagination li a:hover, .pagination .active a{
     border-bottom: 3px solid #673ab7;
     border-bottom: 3px solid var(--primary,#673ab7);
 }
@@ -258,14 +258,14 @@ hr:after{
     padding: 0;
     min-height: 400px;
 }
-.articles li{
+.articles > li{
     padding-bottom: 8px;
     list-style-type: none;
     margin: 40px 0;
     text-align: center;
  }
 
-.articles li:after{
+.articles > li:after{
     content: '';
     display: block;
     margin: 60px auto;
@@ -309,7 +309,7 @@ hr:after{
     color: var(--primary,#673ab7);
 }
 .article-info{
-    margin:20px 0 60px;
+    margin:20px 0 20px;
     color: #999;
     font-size: 14px;
     height: 40px;
@@ -335,10 +335,12 @@ hr:after{
     margin: 10px 0;
 }
 .articles .description{
-    color: #555;
-    font-size: 16px;
+    color: #aaa;
+    font-size: 14px;
     text-align: left;
-    line-height: 2;
+    overflow: hidden;
+    height: 140px;
+    line-height: 1em;
     text-indent: 2em;
     margin-bottom: 40px;
 }
@@ -346,6 +348,16 @@ hr:after{
     .articles .description{
         padding: 0 10px;
     }
+}
+
+.articles .description h1, .articles .description h2, .articles .description h3{
+    font-size: 15px;
+}
+
+.articles .description ul{
+    padding: 0 0 0 2em;
+    margin-top: 0;
+    margin-bottom: 16px;
 }
 
 .sub{
@@ -418,7 +430,7 @@ hr:after{
     display: flex;
     flex-wrap: wrap;
     list-style: none;
-    margin: 0;
+    margin: 1em;
     padding: 0;
 }
 .action a{

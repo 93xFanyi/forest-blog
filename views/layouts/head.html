@@ -10,9 +10,8 @@
     <meta name="description" content="{{ .Config.HtmlDescription }}" />
     <title>{{ .Title }} - {{ .Config.SiteName }}</title>
     <style>:root{--primary: {{ .Config.ThemeColor }}}</style>
-    <link rel="stylesheet" href="/public/css/prism.css">
+    <link rel="stylesheet" href="/public/css/editormd.preview.min.css">
     <link rel="stylesheet" href="/public/css/app.css">
-    <script src="/public/js/marked.min.js"></script>
     <script>
         function obj2StrParams(obj,firstStr = '?') {
             let params = firstStr;
@@ -42,10 +41,10 @@
 <body class="theme{{ .Config.ThemeColor }}">
     <nav class="head">
         <div class="container head-content">
-            <div class="logo">{{ .Config.SiteName }}</div>
+            <div class="logo"><a href="/blog">{{ .Config.SiteName }}</a></div>
             <div class="nav">
-                <a href="/blog">Blog</a>
-                <a href="/categories">Categories</a>
+                <a href="/blog">更新列表</a>
+                <a href="/categories">分类</a>
                 {{range $nav :=  .Navs }}
                     <a href="/extra-nav?name={{ $nav.Title }}">{{ $nav.Title }}</a>
                 {{end}}

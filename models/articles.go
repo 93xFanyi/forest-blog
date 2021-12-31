@@ -12,6 +12,8 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/russross/blackfriday/v2"
 )
 
 type Time time.Time
@@ -66,10 +68,10 @@ func ArticleSearch(articles *Articles, search string, category string) Articles 
 
 		pass := true
 
-		if search != "" && strings.Index(article.Title, search) == -1 {
+		if search != "" && !strings.Contains(article.Title, search) {
 			pass = false
 		}
-		if category != "" && strings.Index(article.Category, category) == -1 {
+		if category != "" && !strings.Contains(article.Category, category) {
 			pass = false
 		}
 		if pass {
@@ -114,8 +116,7 @@ func RecursiveReadArticles(dir string) (Articles, error) {
 				return articles, err
 			}
 			articles = append(articles, article)
-		} else if
-		strings.HasSuffix(upperName, ".PNG") ||
+		} else if strings.HasSuffix(upperName, ".PNG") ||
 			strings.HasSuffix(upperName, ".GIF") ||
 			strings.HasSuffix(upperName, ".JPG") {
 
@@ -169,7 +170,7 @@ func readMarkdown(path string) (Article, ArticleDetail, error) {
 	article.Title = strings.TrimSuffix(strings.ToUpper(mdFile.Name()), ".MD")
 	article.Date = Time(mdFile.ModTime())
 
-	if ! bytes.HasPrefix(markdown, []byte("```json")) {
+	if !bytes.HasPrefix(markdown, []byte("```json")) {
 		article.Description = cropDesc(markdown)
 		articleDetail.Article = article
 		articleDetail.Body = string(markdown)
@@ -194,15 +195,68 @@ func readMarkdown(path string) (Article, ArticleDetail, error) {
 	return article, articleDetail, nil
 }
 
-func cropDesc(c []byte) string {
-	content := []rune(string(c))
-	contentLen := len(content)
+// func cropDesc(c []byte) string {
+// 	content := []rune(string(c))
+// 	contentLen := len(content)
 
-	if contentLen <= config.Cfg.DescriptionLen {
-		return string(content[0:contentLen])
+// 	if contentLen <= config.Cfg.DescriptionLen {
+// 		return string(content[0:contentLen])
+// 	}
+
+// 	return string(content[0:config.Cfg.DescriptionLen])
+// }
+
+func contains(s []blackfriday.NodeType, t blackfriday.NodeType) bool {
+	for _, n := range s {
+		if n == t {
+			return true
+		}
+	}
+	return false
+}
+
+func cropDesc(c []byte) string {
+	r := blackfriday.NewHTMLRenderer(blackfriday.HTMLRendererParameters{
+		Flags: blackfriday.CommonHTMLFlags,
+	})
+	optList := []blackfriday.Option{
+		blackfriday.WithExtensions(blackfriday.CommonExtensions),
+	}
+	parser := blackfriday.New(optList...)
+	ast := parser.Parse(c)
+
+	whitelist := []blackfriday.NodeType{
+		blackfriday.Document,
+		blackfriday.Paragraph,
+		blackfriday.List,
+		blackfriday.Item,
+		blackfriday.Heading,
+		blackfriday.Emph,
+		blackfriday.Strong,
+		blackfriday.Del,
+		blackfriday.Link,
+		blackfriday.Text,
+		blackfriday.Code,
 	}
 
-	return string(content[0:config.Cfg.DescriptionLen])
+	var buf bytes.Buffer
+	r.RenderHeader(&buf, ast)
+
+	nodeCount := 0
+	ast.Walk(func(node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
+		if !contains(whitelist, node.Type) {
+			return blackfriday.SkipChildren
+		}
+		if entering && node.Parent == ast {
+			nodeCount += 1
+			if nodeCount > config.Cfg.DescriptionLen {
+				return blackfriday.Terminate
+			}
+		}
+		return r.RenderNode(&buf, node, entering)
+	})
+	r.RenderFooter(&buf, ast)
+	return buf.String()
 }
 
 func (t *Time) UnmarshalJSON(b []byte) error {

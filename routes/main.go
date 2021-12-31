@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func InitRoute()  {
+func InitRoute() {
 
 	http.HandleFunc("/", controller.Index)
 	http.HandleFunc("/blog", controller.Index)
@@ -15,10 +15,10 @@ func InitRoute()  {
 	http.HandleFunc("/extra-nav", controller.ExtraNav)
 
 	http.HandleFunc(config.Cfg.GitHookUrl, controller.GithubHook)
-	http.HandleFunc( config.Cfg.DashboardEntrance, controller.Dashboard)
+	http.HandleFunc(config.Cfg.DashboardEntrance, controller.Dashboard)
 
-	http.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir(config.Cfg.CurrentDir + "/public"))))
+	http.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir(config.Cfg.CurrentDir+"/public"))))
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(config.Cfg.DocumentAssetsDir))))
-	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(config.Cfg.CurrentDir + "/images"))))
+	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir(config.Cfg.CurrentDir+"/images"))))
 
 }

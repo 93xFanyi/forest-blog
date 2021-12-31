@@ -2,6 +2,7 @@ package models
 
 import (
 	"ForestBlog/config"
+	"fmt"
 	"sync"
 )
 
@@ -9,6 +10,15 @@ var Navigation Navs
 var ArticleList Articles
 var ArticleShortUrlMap map[string]string //用来保证文章 shortUrl 唯一和快速定位文章
 var Template HtmlTemplate
+
+func ReloadHtmlTemplate() error {
+	fmt.Println("Reloading HtmlTemplate...")
+	template, err := initHtmlTemplate(config.Cfg.CurrentDir + "/views")
+	if err == nil {
+		Template = template
+	}
+	return err
+}
 
 func CompiledContent() {
 	config.Initial() //克隆或者更新文档库
@@ -44,7 +54,7 @@ func CompiledContent() {
 		}
 		wg.Done()
 	}()
+
 	wg.Wait()
 	//启用并发比之前节约4倍左右的时间
-	return
 }

@@ -1,5 +1,4 @@
 {{template "header" .}}
-<div class="sub-title">- {{ .Title }} -</div>
 
 <ul class="articles">
     {{range .Data.List }}
@@ -23,7 +22,7 @@
                     <span>发表于{{ .Date.Format "2006-01-02 15:04" }}</span>
                 </span>
             </div>
-            <div class="description"> {{ .Description }}...</div>
+            <div class="description"> {{ .Description | unescapeHTML }} </div>
             <a class="read-all" href="/article?key={{ .ShortUrl }}" rel="contents">
                 阅读全文 »
             </a>
